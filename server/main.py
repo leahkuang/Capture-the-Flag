@@ -38,6 +38,9 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                     await asyncio.sleep(1) 
                     game.reset_game()
                     await broadcast_state()
+            elif msg.get("action") == "reset":
+                game.reset_game()
+                await broadcast_state()
 
     except WebSocketDisconnect:
         game.remove_player(player_id)
