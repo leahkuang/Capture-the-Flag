@@ -17,6 +17,8 @@ let players = [];
 let flags = {};
 let scores = { red: 0, blue: 0 };
 let gameOver = false;
+let gameRestarting = false;
+let winner = null;
 
 
 let playerId = Math.random().toString(36).substring(2, 10);
@@ -38,8 +40,17 @@ socket.onmessage = (event) => {
   players = data.players;
   flags = data.flags;
   scores = data.scores;
-  gameOver = data.gameOver || false;
+  gameOver = data.gameOver;
+  winner = data.winner;
+  
   draw();
+  if (gameOver && !gameRestarting) {
+    gameRestarting = true;
+    setTimeout(() => {
+      socket.send(JSON.stringify({ action: "reset" }));
+      gameRestarting = false;
+    }, 3000); 
+  }
 };
 
 socket.onclose = () => {
@@ -93,3 +104,11 @@ window.addEventListener("keydown", (e) => {
     socket.send(JSON.stringify({ action: "move", direction }));
   }
 });
+
+const resetBtn = document.getElementById("resetBtn");
+resetBtn.addEventListener("click", () => {
+  if (socket.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify({ action: "reset" }));
+  }
+});
+
