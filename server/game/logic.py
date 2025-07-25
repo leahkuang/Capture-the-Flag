@@ -11,6 +11,7 @@ class GameManager:
         self.scores = {"red": 0, "blue": 0}
         self.winning_score = 3
         self.game_over = False
+        self.winner = None
 
     def add_player(self, player_id: str) -> Player:
         team = "blue" if len(self.players) % 2 == 0 else "red"
@@ -47,6 +48,7 @@ class GameManager:
 
             if self.scores[player.team] >= self.winning_score:
                 self.game_over = True
+                self.winner = player.team
                 print(f"Team {player.team} wins!")
 
             self.reset_positions()
@@ -57,7 +59,8 @@ class GameManager:
             "players": [p.dict() for p in self.players.values()],
             "flags": self.flags,
             "scores": self.scores,
-            "game_over": self.game_over
+            "game_over": self.game_over,
+            "winner": self.winner
         }
 
     def reset_positions(self):
@@ -69,3 +72,9 @@ class GameManager:
 
         self.flags["red"] = {"x": 100, "y": 330}
         self.flags["blue"] = {"x": 700, "y": 330}
+
+    def reset_game(self):
+        self.reset_positions()
+        self.scores = {"red": 0, "blue": 0}
+        self.game_over = False
+        self.winner = None
