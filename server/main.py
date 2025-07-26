@@ -6,6 +6,8 @@ from fastapi.staticfiles import StaticFiles
 from typing import Dict
 from models.player import Player
 from game.logic import GameManager
+from services.redis import init_redis, publish, subscribe
+
 
 app = FastAPI()
 
