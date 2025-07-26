@@ -14,6 +14,10 @@ class GameManager:
         self.winner = None
 
     def add_player(self, player_id: str) -> Player:
+        if player_id in self.players:
+            print(f"[add_player] {player_id} reconnect")
+            return self.players[player_id]
+
         team = "blue" if len(self.players) % 2 == 0 else "red"
         player = Player(id=player_id, x=400, y=330, team=team)
         self.players[player_id] = player
@@ -23,13 +27,11 @@ class GameManager:
         if player_id in self.players:
             del self.players[player_id]
 
-    def move_player(self, player_id: str, direction: str):
-        if self.game_over:
-            return
-            
+    def move_player(self, player_id: str, direction: str):  
         player = self.players.get(player_id)
         if not player:
             return
+            
         if direction == "left":
             player.x = max(0, player.x - 5)
         elif direction == "right":
@@ -38,7 +40,10 @@ class GameManager:
             player.y = max(0, player.y - 5)
         elif direction == "down":
             player.y = min(660 - 40, player.y + 5)
-        self.check_capture(player)
+            
+        if not self.game_over:
+            self.check_capture(player)
+
 
     def check_capture(self, player):
         opponent_flag = self.flags["blue"] if player.team == "red" else self.flags["red"]
@@ -51,7 +56,8 @@ class GameManager:
                 self.winner = player.team
                 print(f"Team {player.team} wins!")
 
-            self.reset_positions()
+            else:
+                self.reset_positions()
 
 
     def get_state(self):
