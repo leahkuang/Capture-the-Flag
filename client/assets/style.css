@@ -10,3 +10,22 @@ canvas {
   margin: 20px auto;
   background: white;
 }
+
+#resetBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 16px;
+  font-size: 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
+}
+
+#resetBtn:hover {
+  background-color: #2980b9;
+}
