@@ -19,44 +19,69 @@ let scores = { red: 0, blue: 0 };
 let gameOver = false;
 let gameRestarting = false;
 let winner = null;
+let socket;
+let room = localStorage.getItem("room") || "default";
+let onlinePlayers = [];
+
+let playerId = localStorage.getItem("playerId");
+if (!playerId) {
+  playerId = Math.random().toString(36).substring(2, 10);
+  localStorage.setItem("playerId", playerId);
+}
 
 
-let playerId = Math.random().toString(36).substring(2, 10);
+function connectWebSocket() {
+  const endpoints = [`ws://${window.location.hostname}:8000/ws/${room}/${playerId}`,
+                     `ws://${window.location.hostname}:8001/ws/${room}/${playerId}`];
+  let attempt = 0;
 
-const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/${playerId}`);
+   function tryConnect() {
+     socket = new WebSocket(endpoints[attempt]);
+     socket.onopen = () => {
+       console.log('WebSocket connected to', endpoints[attempt]);
+       setupSocketHandlers();  
+     };
+     socket.addEventListener('close', () => {
+       attempt++;
+       if (attempt < endpoints.length) {
+         tryConnect(); 
+       } else {
+         console.error('Unable to connect to any server');
+       }
+     });
 
-socket.onopen = () => {
-  console.log("WebSocket connected");
-};
+     socket.addEventListener('error', (err) => {
+       console.error('WebSocket error', err);
+     });
+   }
+  tryConnect();
+}
 
-socket.onmessage = (event) => {
-  let data;
-  try {
-    data = JSON.parse(event.data);
-  } catch {
-    console.warn("Received non-JSON message:", event.data);
-    return;
-  }
-  players = data.players;
-  flags = data.flags;
-  scores = data.scores;
-  gameOver = data.gameOver;
-  winner = data.winner;
+connectWebSocket();
+
+
+
+function setupSocketHandlers() {
+  socket.onmessage = (event) => {
+    let data;
+    try {
+      data = JSON.parse(event.data);
+    } catch {
+      console.warn("Received non-JSON message:", event.data);
+      return;
+    }
+    players = data.players;
+    flags = data.flags;
+    scores = data.scores;
+    gameOver = data.gameOver;
+    winner = data.winner;
+    onlinePlayers = data.online || [];
+    draw();
+  };
+}
+
   
-  draw();
-  if (gameOver && !gameRestarting) {
-    gameRestarting = true;
-    setTimeout(() => {
-      socket.send(JSON.stringify({ action: "reset" }));
-      gameRestarting = false;
-    }, 3000); 
-  }
-};
-
-socket.onclose = () => {
-  console.log("WebSocket closed");
-};
-
+  
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -77,12 +102,14 @@ function draw() {
   ctx.drawImage(images.blueFlag, flags.blue.x, flags.blue.y, 40, 40);
 
   players.forEach((player) => {
+    if (!onlinePlayers.includes(player.id)) return;
     const img = player.team === "red" ? images.redPlayer : images.bluePlayer;
     ctx.drawImage(img, player.x, player.y, 40, 40);
   });
 }
 
 window.addEventListener("keydown", (e) => {
+  if (!socket || socket.readyState !== WebSocket.OPEN) return; 
   if (gameOver) return;
 
   let direction;
