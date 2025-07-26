@@ -1,0 +1,107 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>Lobby</title>
+</head>
+<body>
+  <h2>Join a Room</h2>
+  <input id="roomInput" placeholder="Enter Room Name">
+  <button id="joinBtn">Join</button>
+
+  <script>
+    document.getElementById("joinBtn").onclick = () => {
+      const room = document.getElementById("roomInput").value.trim();
+      if (room) {
+        localStorage.setItem("room", room);
+        window.location.href = "/";  // 回到 index.html 启动游戏
+      }
+    };
+  </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Game Lobby</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #2b5876, #4e4376);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lobby-container {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      text-align: center;
+      width: 300px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      margin-bottom: 20px;
+      transition: 0.2s ease;
+    }
+
+    input:focus {
+      border-color: #4e4376;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4e4376;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #2b5876;
+    }
+  </style>
+</head>
+<body>
+  <div class="lobby-container">
+    <h2>🎮 Join a Game Room</h2>
+    <input id="roomInput" placeholder="Enter Room Name">
+    <button id="joinBtn">Join Room</button>
+  </div>
+
+  <script>
+    document.getElementById("joinBtn").onclick = () => {
+      const room = document.getElementById("roomInput").value.trim();
+      if (room) {
+        localStorage.setItem("room", room);
+        window.location.href = "/index.html";  // 默认跳转 index.html 或 game.html
+      } else {
+        alert("Please enter a room name.");
+      }
+    };
+  </script>
+</body>
+</html>
+
