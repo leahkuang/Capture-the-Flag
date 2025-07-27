@@ -65,7 +65,7 @@ class GameManager:
             "players": [p.dict() for p in self.players.values()],
             "flags": self.flags,
             "scores": self.scores,
-            "game_over": self.game_over,
+            "gameOver": self.game_over,
             "winner": self.winner
         }
 
