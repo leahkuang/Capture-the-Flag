@@ -84,6 +84,6 @@ async def consume_game_updates():
         game.players = {p['id']: Player(**p) for p in msg['players']}
         game.flags = msg['flags']
         game.scores = msg['scores']
-        game.game_over = msg['game_over']
+        game.game_over = msg['gameOver']
         game.winner = msg['winner']
         await broadcast_state(room)
