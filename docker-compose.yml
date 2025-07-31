@@ -8,12 +8,16 @@ services:
   server:
     build: ./server
     depends_on: [redis]
+    environment:
+      - SERVER_ID=main
     ports:
       - "8000:8000"
 
   backup-server:
     build: ./server
     depends_on: [redis]
+    environment:
+      - SERVER_ID=backup
     ports:
       - "8001:8000" 
       
