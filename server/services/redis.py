@@ -11,7 +11,7 @@ async def init_redis():
     redis = aioredis.Redis(host="redis", port=6379, decode_responses=True)
     pub = redis
     sub = redis.pubsub()
-    await sub.subscribe("game")
+    await sub.psubscribe("game:*")
     return redis
 
 async def publish(channel, msg):
